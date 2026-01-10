@@ -25,7 +25,8 @@
     <header class="header">
         <div class="container">
             <a href="https://lendlord.io/" class="logo" target="_blank" rel="noopener" title="Visit Lendlord.io">
-                <img src="logo.svg" alt="Lendlord - Property Investment Made Simple" height="36">
+                <img src="logo.svg" alt="Lendlord - Property Investment Made Simple" height="36" class="logo-dark">
+                <img src="logo-dark.svg" alt="Lendlord - Property Investment Made Simple" height="36" class="logo-light">
             </a>
             <nav class="nav">
                 <a href="#affordability">Affordability</a>
@@ -34,9 +35,15 @@
                 <a href="#sdlt">Stamp Duty</a>
                 <a href="#analysis">Analysis</a>
             </nav>
-            <a href="https://app.lendlord.io/online-mortgage-broker?country=uk&utm_source=btl_mortgage_calculator&utm_campaign=Organic" class="btn btn-primary header-cta" target="_blank" rel="noopener">
-                Get Mortgage Advice
-            </a>
+            <div class="header-actions">
+                <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle light/dark mode" title="Toggle light/dark mode">
+                    <i data-lucide="sun" class="sun-icon"></i>
+                    <i data-lucide="moon" class="moon-icon"></i>
+                </button>
+                <a href="https://app.lendlord.io/online-mortgage-broker?country=uk&utm_source=btl_mortgage_calculator&utm_campaign=Organic" class="btn btn-primary header-cta" target="_blank" rel="noopener">
+                    Get Mortgage Advice
+                </a>
+            </div>
         </div>
     </header>
 
@@ -965,7 +972,8 @@
             <div class="footer-content">
                 <div class="footer-brand">
                     <a href="https://lendlord.io/" target="_blank" rel="noopener" title="Visit Lendlord.io">
-                        <img src="logo.svg" alt="Lendlord" height="28">
+                        <img src="logo.svg" alt="Lendlord" height="28" class="logo-dark">
+                        <img src="logo-dark.svg" alt="Lendlord" height="28" class="logo-light">
                     </a>
                     <p>Property Investment & Management Made Simple</p>
                 </div>
@@ -987,12 +995,52 @@
     <script src="data-api.js"></script>
     <script src="calculator.js"></script>
     
-    <!-- Initialize Lucide Icons -->
+    <!-- Theme Toggle & Initialize Lucide Icons -->
     <script>
+        // Theme management
+        function getPreferredTheme() {
+            const storedTheme = localStorage.getItem('theme');
+            if (storedTheme) {
+                return storedTheme;
+            }
+            // Check system preference
+            return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+        }
+
+        function setTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+            // Re-create icons after theme change
+            if (typeof lucide !== 'undefined') {
+                setTimeout(() => lucide.createIcons(), 50);
+            }
+        }
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            setTheme(newTheme);
+        }
+
+        // Set initial theme before page render to prevent flash
+        (function() {
+            const theme = getPreferredTheme();
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+
+        // Initialize on DOM ready
         document.addEventListener('DOMContentLoaded', function() {
+            // Create Lucide icons
             if (typeof lucide !== 'undefined') {
                 lucide.createIcons();
             }
+
+            // Listen for system theme changes
+            window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', (e) => {
+                if (!localStorage.getItem('theme')) {
+                    setTheme(e.matches ? 'light' : 'dark');
+                }
+            });
         });
     </script>
 </body>

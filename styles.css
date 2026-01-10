@@ -3,7 +3,7 @@
    Lendlord - Investing.com Style Theme
    ======================================== */
 
-/* CSS Variables - Investing.com Inspired Dark Theme */
+/* CSS Variables - Dark Theme (Default) */
 :root {
     /* Core Colors */
     --bg-primary: #0d1117;
@@ -45,6 +45,49 @@
     
     /* Transitions */
     --transition: all 0.2s ease;
+    
+    /* Logo filter for theme */
+    --logo-filter: none;
+}
+
+/* Light Theme */
+[data-theme="light"] {
+    /* Core Colors */
+    --bg-primary: #ffffff;
+    --bg-secondary: #f6f8fa;
+    --bg-tertiary: #eef1f4;
+    --bg-card: #ffffff;
+    --bg-hover: #e8ebef;
+    
+    /* Brand Color (Lendlord) - slightly darker for contrast */
+    --primary: #d4910e;
+    --primary-dark: #b87d0a;
+    --primary-light: #EBA11F;
+    
+    /* Accent Colors - adjusted for light bg */
+    --green: #1a7f37;
+    --green-light: #1f883d;
+    --red: #cf222e;
+    --red-light: #d1242f;
+    --blue: #0969da;
+    --yellow: #9a6700;
+    
+    /* Text Colors */
+    --text-primary: #1f2328;
+    --text-secondary: #57606a;
+    --text-muted: #6e7781;
+    --text-link: #0969da;
+    
+    /* Border */
+    --border: #d0d7de;
+    --border-light: #e8ebef;
+    
+    /* Shadows */
+    --shadow: 0 8px 24px rgba(140,149,159,0.2);
+    --shadow-lg: 0 16px 48px rgba(140,149,159,0.3);
+    
+    /* Logo filter for light theme - invert text to dark */
+    --logo-filter: invert(1);
 }
 
 /* Reset & Base */
@@ -187,6 +230,66 @@ a:hover {
     width: auto;
 }
 
+/* Logo visibility based on theme */
+.logo-light {
+    display: none;
+}
+
+.logo-dark {
+    display: block;
+}
+
+[data-theme="light"] .logo-light {
+    display: block;
+}
+
+[data-theme="light"] .logo-dark {
+    display: none;
+}
+
+/* Theme Toggle */
+.theme-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: var(--transition);
+    color: var(--text-secondary);
+    margin-right: 12px;
+}
+
+.theme-toggle:hover {
+    background: var(--bg-hover);
+    color: var(--primary);
+    border-color: var(--primary);
+}
+
+.theme-toggle svg {
+    width: 18px;
+    height: 18px;
+}
+
+.theme-toggle .sun-icon {
+    display: none;
+}
+
+.theme-toggle .moon-icon {
+    display: block;
+}
+
+[data-theme="light"] .theme-toggle .sun-icon {
+    display: block;
+}
+
+[data-theme="light"] .theme-toggle .moon-icon {
+    display: none;
+}
+
 .nav {
     display: flex;
     gap: 24px;
@@ -206,6 +309,12 @@ a:hover {
     border-bottom-color: var(--primary);
 }
 
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
 .header-cta {
     padding: 8px 16px;
     font-size: 12px;
@@ -214,6 +323,7 @@ a:hover {
 @media (max-width: 968px) {
     .nav { display: none; }
     .header-cta { display: none; }
+    .header-actions { gap: 8px; }
 }
 
 /* Hero Section - Compact Investing.com Style */
@@ -1688,7 +1798,30 @@ select:focus {
 
 .footer-brand img {
     margin-bottom: 6px;
-    filter: brightness(0.9);
+}
+
+/* Theme transition for smooth switching */
+body,
+.header,
+.hero,
+.calc-nav,
+.calculator-section,
+.calculator-inputs,
+.calculator-results,
+.result-card,
+.info-box,
+.comparison-card,
+.gauge-card,
+.sdlt-breakdown,
+.detail-section,
+.tax-card,
+.regulatory-updates,
+.cta-banner,
+.final-cta,
+.rent-estimator-card,
+.data-sources,
+.footer {
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
 }
 
 .footer-brand p {
@@ -1849,6 +1982,78 @@ select:focus {
 
 ::-webkit-scrollbar-thumb:hover {
     background: var(--text-muted);
+}
+
+/* Light Theme Specific Overrides */
+[data-theme="light"] .btn-primary {
+    background: var(--primary);
+    color: #fff;
+}
+
+[data-theme="light"] .btn-primary:hover {
+    background: var(--primary-dark);
+}
+
+[data-theme="light"] .toggle-btn.active {
+    background: var(--primary);
+    color: #fff;
+}
+
+[data-theme="light"] .comparison-badge {
+    background: var(--primary);
+    color: #fff;
+}
+
+[data-theme="light"] .estimate-item.highlight {
+    background: var(--primary);
+}
+
+[data-theme="light"] .estimate-item.highlight .estimate-label,
+[data-theme="light"] .estimate-item.highlight .estimate-value {
+    color: #fff;
+}
+
+[data-theme="light"] .rate-card {
+    background: var(--bg-card);
+    border-color: var(--border);
+    box-shadow: var(--shadow);
+}
+
+[data-theme="light"] .result-card.main-result {
+    background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-tertiary) 100%);
+}
+
+[data-theme="light"] select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2357606a' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+}
+
+[data-theme="light"] .source-item img {
+    filter: grayscale(100%) brightness(0.8);
+}
+
+[data-theme="light"] .zone.poor { background: rgba(207, 34, 46, 0.1); }
+[data-theme="light"] .zone.average { background: rgba(154, 103, 0, 0.1); }
+[data-theme="light"] .zone.good { background: rgba(9, 105, 218, 0.1); }
+[data-theme="light"] .zone.excellent { background: rgba(26, 127, 55, 0.1); }
+
+[data-theme="light"] .savings-highlight {
+    background: rgba(26, 127, 55, 0.1);
+}
+
+[data-theme="light"] .surcharge-summary {
+    background: rgba(212, 145, 14, 0.1);
+}
+
+[data-theme="light"] .tax-card.new {
+    background: rgba(207, 34, 46, 0.1);
+}
+
+[data-theme="light"] .result-item.highlight {
+    background: rgba(212, 145, 14, 0.1);
+}
+
+[data-theme="light"] .tax-difference {
+    background: rgba(207, 34, 46, 0.1);
 }
 
 /* Print Styles */
