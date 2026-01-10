@@ -745,6 +745,106 @@ select:focus {
     display: block;
 }
 
+/* Repayment Schedule */
+.schedule-section {
+    margin-top: 16px;
+}
+
+.schedule-content {
+    display: none;
+    margin-top: 12px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+}
+
+.schedule-content.show {
+    display: block;
+}
+
+.schedule-header {
+    padding: 12px 16px;
+    background: var(--bg-tertiary);
+    border-bottom: 1px solid var(--border);
+}
+
+.schedule-header h4 {
+    font-size: 12px;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+}
+
+.schedule-summary {
+    display: flex;
+    gap: 16px;
+    font-size: 11px;
+    color: var(--text-secondary);
+}
+
+.schedule-summary strong {
+    color: var(--primary);
+}
+
+.schedule-table-wrapper {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.schedule-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+}
+
+.schedule-table th {
+    position: sticky;
+    top: 0;
+    background: var(--bg-tertiary);
+    color: var(--text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 8px 10px;
+    text-align: right;
+    border-bottom: 1px solid var(--border);
+}
+
+.schedule-table th:first-child {
+    text-align: left;
+}
+
+.schedule-table td {
+    padding: 8px 10px;
+    text-align: right;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border-light);
+    font-variant-numeric: tabular-nums;
+}
+
+.schedule-table td:first-child {
+    text-align: left;
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.schedule-table tr:hover td {
+    background: var(--bg-hover);
+}
+
+.schedule-table .principal {
+    color: var(--green);
+}
+
+.schedule-table .interest {
+    color: var(--red-light);
+}
+
+.schedule-table .balance {
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
 /* Calculator Results - Data Table Style */
 .calculator-results {
     position: sticky;

@@ -462,6 +462,84 @@ function calculatePayments() {
     updateElement('pay-rep-total', formatCurrency(repaymentTotal));
     
     updateElement('pay-monthly-diff', formatCurrency(monthlyDiff));
+    
+    // Generate repayment schedule
+    generateRepaymentSchedule(loanAmount, monthlyRate, numberOfPayments, repaymentMonthly, term);
+}
+
+/**
+ * Toggle repayment schedule visibility
+ */
+function toggleSchedule(btn) {
+    const content = document.getElementById('schedule-content');
+    btn.classList.toggle('active');
+    content.classList.toggle('show');
+    
+    const span = btn.querySelector('span');
+    if (content.classList.contains('show')) {
+        span.textContent = 'Hide Repayment Schedule';
+    } else {
+        span.textContent = 'View Repayment Schedule';
+    }
+    
+    // Re-create icons after toggle
+    if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+    }
+}
+
+/**
+ * Generate annual repayment schedule
+ */
+function generateRepaymentSchedule(loanAmount, monthlyRate, numberOfPayments, monthlyPayment, termYears) {
+    const tbody = document.getElementById('schedule-tbody');
+    if (!tbody) return;
+    
+    let balance = loanAmount;
+    let totalInterest = 0;
+    let totalPaid = 0;
+    let html = '';
+    
+    // Generate yearly summary (not monthly for compact view)
+    for (let year = 1; year <= termYears; year++) {
+        let yearlyPrincipal = 0;
+        let yearlyInterest = 0;
+        let yearlyPayment = 0;
+        
+        // Calculate 12 months
+        for (let month = 1; month <= 12; month++) {
+            if (balance <= 0) break;
+            
+            const interestPayment = balance * monthlyRate;
+            const principalPayment = Math.min(monthlyPayment - interestPayment, balance);
+            
+            yearlyInterest += interestPayment;
+            yearlyPrincipal += principalPayment;
+            yearlyPayment += monthlyPayment;
+            
+            balance -= principalPayment;
+            if (balance < 0) balance = 0;
+        }
+        
+        totalInterest += yearlyInterest;
+        totalPaid += yearlyPayment;
+        
+        html += `
+            <tr>
+                <td>Year ${year}</td>
+                <td>${formatCurrency(yearlyPayment)}</td>
+                <td class="principal">${formatCurrency(yearlyPrincipal)}</td>
+                <td class="interest">${formatCurrency(yearlyInterest)}</td>
+                <td class="balance">${formatCurrency(balance)}</td>
+            </tr>
+        `;
+    }
+    
+    tbody.innerHTML = html;
+    
+    // Update summary
+    updateElement('schedule-total-interest', formatCurrency(totalInterest));
+    updateElement('schedule-total-paid', formatCurrency(totalPaid));
 }
 
 // ============================================

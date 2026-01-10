@@ -53,7 +53,7 @@
         <div class="container">
             <div class="hero-content">
                 <h1>UK Buy-to-Let<br><span class="highlight">Mortgage Calculator</span></h1>
-                <p class="hero-subtitle">The most comprehensive BTL calculator in the UK. Calculate affordability, payments, yields, stamp duty and investment returns — all in one place.</p>
+                <p class="hero-subtitle">Calculate affordability, payments, yields, stamp duty and investment returns - all in one place.</p>
                 <div class="hero-badges">
                     <div class="badge">
                         <i data-lucide="shield-check" class="badge-icon"></i>
@@ -239,9 +239,9 @@
                         </select>
                     </div>
 
-                    <button class="btn btn-primary btn-calculate" onclick="calculateAffordability()">
+                    <a href="https://app.lendlord.io/online-mortgage-broker?country=uk&utm_source=btl_mortgage_calculator&utm_campaign=Organic" class="btn btn-primary btn-calculate" target="_blank" rel="noopener">
                         Calculate Maximum Loan
-                    </button>
+                    </a>
                 </div>
 
                 <div class="calculator-results">
@@ -353,9 +353,9 @@
                         <input type="hidden" id="pay-add-fee" value="yes">
                     </div>
 
-                    <button class="btn btn-primary btn-calculate" onclick="calculatePayments()">
+                    <a href="https://app.lendlord.io/online-mortgage-broker?country=uk&utm_source=btl_mortgage_calculator&utm_campaign=Organic" class="btn btn-primary btn-calculate" target="_blank" rel="noopener">
                         Calculate Payments
-                    </button>
+                    </a>
                 </div>
 
                 <div class="calculator-results">
@@ -409,6 +409,39 @@
                         <div class="info-content">
                             <strong>Interest-Only Consideration</strong>
                             <p>With interest-only, you'll need a repayment strategy (e.g., property sale, savings, pension) to clear the loan at term end.</p>
+                        </div>
+                    </div>
+
+                    <!-- Repayment Schedule -->
+                    <div class="schedule-section">
+                        <button class="expand-btn" onclick="toggleSchedule(this)">
+                            <i data-lucide="calendar" style="width:14px;height:14px;margin-right:6px;"></i>
+                            <span>View Repayment Schedule</span>
+                        </button>
+                        <div class="schedule-content" id="schedule-content">
+                            <div class="schedule-header">
+                                <h4>Annual Repayment Schedule (Capital & Interest)</h4>
+                                <div class="schedule-summary">
+                                    <span>Total Interest: <strong id="schedule-total-interest">£0</strong></span>
+                                    <span>Total Paid: <strong id="schedule-total-paid">£0</strong></span>
+                                </div>
+                            </div>
+                            <div class="schedule-table-wrapper">
+                                <table class="schedule-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Year</th>
+                                            <th>Payment</th>
+                                            <th>Principal</th>
+                                            <th>Interest</th>
+                                            <th>Balance</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="schedule-tbody">
+                                        <!-- Populated by JS -->
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -492,9 +525,9 @@
                         </div>
                     </div>
 
-                    <button class="btn btn-primary btn-calculate" onclick="calculateYield()">
+                    <a href="https://app.lendlord.io/online-mortgage-broker?country=uk&utm_source=btl_mortgage_calculator&utm_campaign=Organic" class="btn btn-primary btn-calculate" target="_blank" rel="noopener">
                         Calculate Yield
-                    </button>
+                    </a>
                 </div>
 
                 <div class="calculator-results">
@@ -607,9 +640,9 @@
                         <span class="input-hint">Non-residents pay +2% surcharge</span>
                     </div>
 
-                    <button class="btn btn-primary btn-calculate" onclick="calculateSDLT()">
+                    <a href="https://app.lendlord.io/online-mortgage-broker?country=uk&utm_source=btl_mortgage_calculator&utm_campaign=Organic" class="btn btn-primary btn-calculate" target="_blank" rel="noopener">
                         Calculate Stamp Duty
-                    </button>
+                    </a>
                 </div>
 
                 <div class="calculator-results">
@@ -761,9 +794,9 @@
                         </select>
                     </div>
 
-                    <button class="btn btn-primary btn-calculate btn-large" onclick="calculateFullAnalysis()">
+                    <a href="https://app.lendlord.io/online-mortgage-broker?country=uk&utm_source=btl_mortgage_calculator&utm_campaign=Organic" class="btn btn-primary btn-calculate btn-large" target="_blank" rel="noopener">
                         Run Full Analysis
-                    </button>
+                    </a>
                 </div>
 
                 <div class="calculator-results analysis-results">
@@ -979,9 +1012,9 @@
                 </div>
                 <div class="footer-links">
                     <a href="https://lendlord.io/" target="_blank" rel="noopener">Home</a>
-                    <a href="https://lendlord.io/tools/calculators/" target="_blank" rel="noopener">Calculators</a>
-                    <a href="https://lendlord.io/finance/mortgages/" target="_blank" rel="noopener">Mortgages</a>
-                    <a href="https://lendlord.io/blog/" target="_blank" rel="noopener">Blog</a>
+                    <a href="https://app.lendlord.io/publicDealAnalyzer?utm_source=btl_calculator&utm_campaign=Organic" target="_blank" rel="noopener">Calculators</a>
+                    <a href="https://app.lendlord.io/online-mortgage-broker?country=uk&utm_source=btl_mortgage_calculator&utm_campaign=Organic" target="_blank" rel="noopener">Mortgages</a>
+                    <a href="https://lendlord.io/blog?utm_source=btl_calculator&utm_campaign=Organic" target="_blank" rel="noopener">Blog</a>
                 </div>
                 <div class="footer-legal">
                     <p>© 2026 Lendlord Limited. Company registration: 11973095</p>
