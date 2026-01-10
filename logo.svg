@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 40" fill="none">
+  <defs>
+    <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#EBA11F"/>
+      <stop offset="100%" style="stop-color:#F5C76A"/>
+    </linearGradient>
+  </defs>
+  <!-- House Icon -->
+  <path d="M20 8L4 20h4v12h24V20h4L20 8zm0 4.5L30 20v8H10v-8l10-7.5z" fill="url(#logoGradient)"/>
+  <rect x="16" y="22" width="8" height="6" fill="#0d1117"/>
+  <!-- Text: Lendlord -->
+  <text x="44" y="28" font-family="Montserrat, Arial, sans-serif" font-size="22" font-weight="700" fill="#ffffff">
+    Lend<tspan fill="url(#logoGradient)">lord</tspan>
+  </text>
+</svg>
+
