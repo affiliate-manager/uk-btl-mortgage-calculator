@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UK Buy-to-Let Mortgage Calculator | Lendlord</title>
+    <meta name="description" content="Calculate your buy-to-let mortgage affordability, monthly payments, rental yield, stamp duty and ROI with our comprehensive UK BTL calculator.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="https://lendlord.io/wp-content/uploads/2021/06/cropped-Lendlord-favicon-32x32.png">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <a href="https://lendlord.io/" class="logo" target="_blank" rel="noopener">
+                <img src="https://lendlord.io/wp-content/uploads/2021/06/Lendlord-logo.svg" alt="Lendlord" height="40" onerror="this.src='https://lendlord.io/wp-content/uploads/2021/06/Lendlord-logo.png'">
+            </a>
+            <nav class="nav">
+                <a href="#affordability">Affordability</a>
+                <a href="#payments">Payments</a>
+                <a href="#yield">Yield</a>
+                <a href="#sdlt">Stamp Duty</a>
+                <a href="#analysis">Analysis</a>
+            </nav>
+            <a href="https://app.lendlord.io/online-mortgage-broker?country=uk&utm_source=btl_mortgage_calculator&utm_campaign=Organic" class="btn btn-primary header-cta" target="_blank" rel="noopener">
+                Get Mortgage Advice
+            </a>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-bg"></div>
+        <div class="container">
+            <div class="hero-content">
+                <h1>UK Buy-to-Let<br><span class="highlight">Mortgage Calculator</span></h1>
+                <p class="hero-subtitle">The most comprehensive BTL calculator in the UK. Calculate affordability, payments, yields, stamp duty and investment returns — all in one place.</p>
+                <div class="hero-badges">
+                    <div class="badge">
+                        <i data-lucide="shield-check" class="badge-icon"></i>
+                        <span>PRA Compliant</span>
+                    </div>
+                    <div class="badge">
+                        <i data-lucide="file-check" class="badge-icon"></i>
+                        <span>Section 24 Ready</span>
+                    </div>
+                    <div class="badge">
+                        <i data-lucide="calendar-check" class="badge-icon"></i>
+                        <span>2026 Tax Rates</span>
+                    </div>
+                </div>
+                <a href="#affordability" class="btn btn-primary btn-large">Start Calculating</a>
+            </div>
+            <div class="hero-visual">
+                <div class="rate-card">
+                    <div class="rate-label">Current BoE Base Rate</div>
+                    <div class="rate-value" id="base-rate">3.75%</div>
+                    <div class="rate-date" id="base-rate-date">Updated: Dec 2025</div>
+                </div>
+                <div class="rate-card secondary">
+                    <div class="rate-label">Avg 5yr BTL Rate (75% LTV)</div>
+                    <div class="rate-value" id="avg-btl-rate">3.57%</div>
+                    <div class="rate-date">Source: Which? / UK Lenders</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Calculator Navigation -->
+    <div class="calc-nav">
+        <div class="container">
+            <div class="calc-nav-items">
+                <button class="calc-nav-item active" data-target="affordability">
+                    <i data-lucide="wallet" class="calc-nav-icon"></i>
+                    <span class="calc-nav-text">Affordability</span>
+                </button>
+                <button class="calc-nav-item" data-target="payments">
+                    <i data-lucide="calculator" class="calc-nav-icon"></i>
+                    <span class="calc-nav-text">Payments</span>
+                </button>
+                <button class="calc-nav-item" data-target="yield">
+                    <i data-lucide="trending-up" class="calc-nav-icon"></i>
+                    <span class="calc-nav-text">Yield</span>
+                </button>
+                <button class="calc-nav-item" data-target="sdlt">
+                    <i data-lucide="landmark" class="calc-nav-icon"></i>
+                    <span class="calc-nav-text">Stamp Duty</span>
+                </button>
+                <button class="calc-nav-item" data-target="analysis">
+                    <i data-lucide="pie-chart" class="calc-nav-icon"></i>
+                    <span class="calc-nav-text">Full Analysis</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rent Estimator Tool -->
+    <section id="rent-estimator" class="rent-estimator-section">
+        <div class="container">
+            <div class="rent-estimator-card">
+<div class="estimator-header">
+                <i data-lucide="home" class="estimator-icon"></i>
+                <div>
+                    <h3>Rent Estimator</h3>
+                    <p>Get ONS-backed rental estimates for any UK location</p>
+                </div>
+            </div>
+                <div class="estimator-inputs">
+                    <div class="input-group">
+                        <label for="est-postcode">Postcode</label>
+                        <input type="text" id="est-postcode" placeholder="e.g. M1 1AA" maxlength="8">
+                    </div>
+                    <div class="input-group">
+                        <label for="est-bedrooms">Bedrooms</label>
+                        <select id="est-bedrooms">
+                            <option value="room">Room Only</option>
+                            <option value="studio">Studio</option>
+                            <option value="1">1 Bedroom</option>
+                            <option value="2" selected>2 Bedrooms</option>
+                            <option value="3">3 Bedrooms</option>
+                            <option value="4">4+ Bedrooms</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" onclick="estimateRent()">
+                        Estimate Rent
+                    </button>
+                </div>
+                <div class="estimator-results" id="rent-estimate-results" style="display: none;">
+                    <div class="estimate-range">
+                        <div class="estimate-item">
+                            <span class="estimate-label">Lower Quartile</span>
+                            <span class="estimate-value" id="est-lower">£0</span>
+                        </div>
+                        <div class="estimate-item highlight">
+                            <span class="estimate-label">Median</span>
+                            <span class="estimate-value" id="est-median">£0</span>
+                        </div>
+                        <div class="estimate-item">
+                            <span class="estimate-label">Upper Quartile</span>
+                            <span class="estimate-value" id="est-upper">£0</span>
+                        </div>
+                    </div>
+                    <div class="estimate-meta">
+                        <span id="est-region">Region: England</span>
+                        <span id="est-source">Source: ONS Private Rental Market Statistics</span>
+                    </div>
+                    <button class="btn btn-secondary" onclick="useEstimatedRent()">
+                        Use Median in Calculator →
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 1: Affordability Calculator -->
+    <section id="affordability" class="calculator-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-number">01</span>
+                <h2>Affordability Calculator</h2>
+                <p>Calculate your maximum borrowing based on rental income using PRA-compliant Interest Coverage Ratio (ICR) stress testing.</p>
+            </div>
+            
+            <div class="calculator-grid">
+                <div class="calculator-inputs">
+                    <div class="input-group">
+                        <label for="aff-rental-income">Monthly Rental Income</label>
+                        <div class="input-wrapper currency">
+                            <span class="currency-symbol">£</span>
+                            <input type="number" id="aff-rental-income" value="1500" min="0" step="50">
+                        </div>
+                        <span class="input-hint">Expected monthly rent from the property</span>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="aff-borrower-type">Borrower Type</label>
+                        <div class="toggle-group">
+                            <button class="toggle-btn active" data-value="individual">Individual</button>
+                            <button class="toggle-btn" data-value="limited">Limited Company (SPV)</button>
+                        </div>
+                        <input type="hidden" id="aff-borrower-type" value="individual">
+                    </div>
+
+                    <div class="input-group" id="tax-band-group">
+                        <label for="aff-tax-band">Tax Band</label>
+                        <select id="aff-tax-band">
+                            <option value="basic">Basic Rate (20%) - Up to £50,270</option>
+                            <option value="higher">Higher Rate (40%) - £50,271 to £125,140</option>
+                            <option value="additional">Additional Rate (45%) - Over £125,140</option>
+                        </select>
+                        <span class="input-hint">Your highest marginal tax rate affects ICR requirements</span>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="aff-product-term">Product Term</label>
+                        <div class="toggle-group">
+                            <button class="toggle-btn" data-value="2year">2-Year Fixed</button>
+                            <button class="toggle-btn active" data-value="5year">5-Year Fixed</button>
+                        </div>
+                        <input type="hidden" id="aff-product-term" value="5year">
+                        <span class="input-hint">5-year fixes use lower stress rates = higher borrowing</span>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="aff-interest-rate">Interest Rate (%)</label>
+                        <div class="input-wrapper">
+                            <input type="number" id="aff-interest-rate" value="3.57" min="0" max="15" step="0.1">
+                            <span class="input-suffix">%</span>
+                        </div>
+                        <span class="input-hint">Current market average: ~3.57% for 5-year BTL (with fee)</span>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="aff-property-type">Property Type</label>
+                        <select id="aff-property-type">
+                            <option value="standard">Standard BTL (Single Let)</option>
+                            <option value="hmo-small">HMO (3-6 bedrooms)</option>
+                            <option value="hmo-large">Large HMO (7+ bedrooms)</option>
+                            <option value="mufb">Multi-Unit Freehold Block</option>
+                        </select>
+                    </div>
+
+                    <button class="btn btn-primary btn-calculate" onclick="calculateAffordability()">
+                        Calculate Maximum Loan
+                    </button>
+                </div>
+
+                <div class="calculator-results">
+                    <div class="result-card main-result">
+                        <div class="result-label">Maximum Loan Amount</div>
+                        <div class="result-value" id="aff-max-loan">£0</div>
+                        <div class="result-sublabel">Based on rental income stress test</div>
+                    </div>
+
+                    <div class="results-breakdown">
+                        <div class="result-item">
+                            <span class="result-item-label">ICR Applied</span>
+                            <span class="result-item-value" id="aff-icr">125%</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-item-label">Stress Rate Used</span>
+                            <span class="result-item-value" id="aff-stress-rate">4.50%</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-item-label">Annual Rental Income</span>
+                            <span class="result-item-value" id="aff-annual-rent">£18,000</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-item-label">Required Annual Cover</span>
+                            <span class="result-item-value" id="aff-required-cover">£22,500</span>
+                        </div>
+                    </div>
+
+                    <div class="info-box">
+                        <i data-lucide="info" class="info-icon"></i>
+                        <div class="info-content">
+                            <strong>PRA Stress Test Explained</strong>
+                            <p>Lenders must ensure your rental income covers <span id="icr-explain">125%</span> of mortgage interest at a stressed rate. 5-year fixed products allow lenders to use the pay rate, significantly increasing borrowing power.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Banner 1 -->
+    <section class="cta-banner">
+        <div class="container">
+            <div class="cta-content">
+                <div class="cta-text">
+                    <h3>Ready to Find Your Perfect Mortgage?</h3>
+                    <p>Get personalised mortgage recommendations based on your profile from our panel of 80+ UK lenders.</p>
+                </div>
+                <a href="https://app.lendlord.io/online-mortgage-broker?country=uk&utm_source=btl_mortgage_calculator&utm_campaign=Organic" class="btn btn-white" target="_blank" rel="noopener">
+                    Discover What Mortgage Deal is Right For Me
+                </a>
+            </div>
+            <div class="cta-image">
+                <img src="https://lendlord.io/wp-content/uploads/2023/07/Lendlord-Portfolio-financing-platform-for-landlords-14.png" alt="Lendlord Platform">
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 2: Monthly Payments Calculator -->
+    <section id="payments" class="calculator-section alt-bg">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-number">02</span>
+                <h2>Monthly Payment Calculator</h2>
+                <p>Calculate your monthly mortgage payments for both interest-only and capital repayment options. Compare side-by-side.</p>
+            </div>
+            
+            <div class="calculator-grid">
+                <div class="calculator-inputs">
+                    <div class="input-group">
+                        <label for="pay-loan-amount">Loan Amount</label>
+                        <div class="input-wrapper currency">
+                            <span class="currency-symbol">£</span>
+                            <input type="number" id="pay-loan-amount" value="200000" min="25000" max="5000000" step="5000">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="pay-interest-rate">Interest Rate (%)</label>
+                        <div class="input-wrapper">
+                            <input type="number" id="pay-interest-rate" value="3.57" min="0" max="15" step="0.1">
+                            <span class="input-suffix">%</span>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="pay-term">Mortgage Term (Years)</label>
+                        <div class="slider-wrapper">
+                            <input type="range" id="pay-term-slider" min="5" max="40" value="25" class="slider">
+                            <input type="number" id="pay-term" value="25" min="5" max="40">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="pay-arrangement-fee">Arrangement Fee</label>
+                        <div class="input-wrapper currency">
+                            <span class="currency-symbol">£</span>
+                            <input type="number" id="pay-arrangement-fee" value="999" min="0" step="1">
+                        </div>
+                        <span class="input-hint">Typical: £999 or 1-2% of loan</span>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Add Fee to Loan?</label>
+                        <div class="toggle-group">
+                            <button class="toggle-btn" data-value="no">No</button>
+                            <button class="toggle-btn active" data-value="yes">Yes</button>
+                        </div>
+                        <input type="hidden" id="pay-add-fee" value="yes">
+                    </div>
+
+                    <button class="btn btn-primary btn-calculate" onclick="calculatePayments()">
+                        Calculate Payments
+                    </button>
+                </div>
+
+                <div class="calculator-results">
+                    <div class="comparison-cards">
+                        <div class="comparison-card interest-only">
+                            <div class="comparison-header">
+                                <span class="comparison-badge">Popular for BTL</span>
+                                <h4>Interest Only</h4>
+                            </div>
+                            <div class="comparison-value" id="pay-interest-only">£0</div>
+                            <div class="comparison-label">per month</div>
+                            <div class="comparison-details">
+                                <div class="detail-row">
+                                    <span>Total Interest Paid</span>
+                                    <span id="pay-io-total-interest">£0</span>
+                                </div>
+                                <div class="detail-row">
+                                    <span>Loan Balance at End</span>
+                                    <span id="pay-io-balance">£0</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="comparison-card capital-repayment">
+                            <div class="comparison-header">
+                                <span class="comparison-badge secondary">Full Repayment</span>
+                                <h4>Capital & Interest</h4>
+                            </div>
+                            <div class="comparison-value" id="pay-repayment">£0</div>
+                            <div class="comparison-label">per month</div>
+                            <div class="comparison-details">
+                                <div class="detail-row">
+                                    <span>Total Interest Paid</span>
+                                    <span id="pay-rep-total-interest">£0</span>
+                                </div>
+                                <div class="detail-row">
+                                    <span>Total Amount Repaid</span>
+                                    <span id="pay-rep-total">£0</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="savings-highlight">
+                        <span class="savings-label">Monthly Savings with Interest-Only:</span>
+                        <span class="savings-value" id="pay-monthly-diff">£0</span>
+                    </div>
+
+                    <div class="info-box warning">
+                        <i data-lucide="alert-triangle" class="info-icon"></i>
+                        <div class="info-content">
+                            <strong>Interest-Only Consideration</strong>
+                            <p>With interest-only, you'll need a repayment strategy (e.g., property sale, savings, pension) to clear the loan at term end.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 3: Rental Yield Calculator -->
+    <section id="yield" class="calculator-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-number">03</span>
+                <h2>Rental Yield Calculator</h2>
+                <p>Calculate both gross and net rental yields. Understand the true return on your buy-to-let investment after all costs.</p>
+            </div>
+            
+            <div class="calculator-grid">
+                <div class="calculator-inputs">
+                    <div class="input-group">
+                        <label for="yield-property-price">Property Purchase Price</label>
+                        <div class="input-wrapper currency">
+                            <span class="currency-symbol">£</span>
+                            <input type="number" id="yield-property-price" value="250000" min="0" step="5000">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="yield-monthly-rent">Monthly Rental Income</label>
+                        <div class="input-wrapper currency">
+                            <span class="currency-symbol">£</span>
+                            <input type="number" id="yield-monthly-rent" value="1200" min="0" step="50">
+                        </div>
+                    </div>
+
+                    <div class="expandable-section">
+                        <button class="expand-btn" onclick="toggleExpand(this)">
+                            <span>+ Add Annual Costs for Net Yield</span>
+                        </button>
+                        <div class="expand-content">
+                            <div class="input-group">
+                                <label for="yield-mortgage-cost">Annual Mortgage Payments</label>
+                                <div class="input-wrapper currency">
+                                    <span class="currency-symbol">£</span>
+                                    <input type="number" id="yield-mortgage-cost" value="9000" min="0" step="100">
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                <label for="yield-management">Management Fees (Annual)</label>
+                                <div class="input-wrapper currency">
+                                    <span class="currency-symbol">£</span>
+                                    <input type="number" id="yield-management" value="1440" min="0" step="100">
+                                </div>
+                                <span class="input-hint">Typically 10-15% of rent</span>
+                            </div>
+                            <div class="input-group">
+                                <label for="yield-insurance">Landlord Insurance (Annual)</label>
+                                <div class="input-wrapper currency">
+                                    <span class="currency-symbol">£</span>
+                                    <input type="number" id="yield-insurance" value="350" min="0" step="50">
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                <label for="yield-maintenance">Maintenance Reserve (Annual)</label>
+                                <div class="input-wrapper currency">
+                                    <span class="currency-symbol">£</span>
+                                    <input type="number" id="yield-maintenance" value="1200" min="0" step="100">
+                                </div>
+                                <span class="input-hint">Budget ~1% of property value</span>
+                            </div>
+                            <div class="input-group">
+                                <label for="yield-void">Void Periods (Weeks per Year)</label>
+                                <input type="number" id="yield-void" value="2" min="0" max="52" step="1">
+                            </div>
+                            <div class="input-group">
+                                <label for="yield-other">Other Annual Costs</label>
+                                <div class="input-wrapper currency">
+                                    <span class="currency-symbol">£</span>
+                                    <input type="number" id="yield-other" value="0" min="0" step="100">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary btn-calculate" onclick="calculateYield()">
+                        Calculate Yield
+                    </button>
+                </div>
+
+                <div class="calculator-results">
+                    <div class="yield-gauges">
+                        <div class="gauge-card">
+                            <div class="gauge" id="gross-yield-gauge">
+                                <svg viewBox="0 0 100 60">
+                                    <path class="gauge-bg" d="M10,50 A40,40 0 0,1 90,50"></path>
+                                    <path class="gauge-fill" id="gross-gauge-fill" d="M10,50 A40,40 0 0,1 90,50"></path>
+                                </svg>
+                                <div class="gauge-value" id="yield-gross">0%</div>
+                            </div>
+                            <div class="gauge-label">Gross Yield</div>
+                            <div class="gauge-hint">Before any expenses</div>
+                        </div>
+                        <div class="gauge-card">
+                            <div class="gauge" id="net-yield-gauge">
+                                <svg viewBox="0 0 100 60">
+                                    <path class="gauge-bg" d="M10,50 A40,40 0 0,1 90,50"></path>
+                                    <path class="gauge-fill net" id="net-gauge-fill" d="M10,50 A40,40 0 0,1 90,50"></path>
+                                </svg>
+                                <div class="gauge-value" id="yield-net">0%</div>
+                            </div>
+                            <div class="gauge-label">Net Yield</div>
+                            <div class="gauge-hint">After all expenses</div>
+                        </div>
+                    </div>
+
+                    <div class="results-breakdown">
+                        <div class="result-item">
+                            <span class="result-item-label">Annual Rental Income</span>
+                            <span class="result-item-value" id="yield-annual-income">£0</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-item-label">Total Annual Costs</span>
+                            <span class="result-item-value" id="yield-total-costs">£0</span>
+                        </div>
+                        <div class="result-item highlight">
+                            <span class="result-item-label">Annual Net Profit</span>
+                            <span class="result-item-value" id="yield-net-profit">£0</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-item-label">Monthly Cashflow</span>
+                            <span class="result-item-value" id="yield-monthly-cashflow">£0</span>
+                        </div>
+                    </div>
+
+                    <div class="yield-benchmark">
+                        <div class="benchmark-label">Yield Rating</div>
+                        <div class="benchmark-scale">
+                            <div class="benchmark-marker" id="yield-marker"></div>
+                            <div class="benchmark-zones">
+                                <span class="zone poor">Poor<br>&lt;4%</span>
+                                <span class="zone average">Average<br>4-6%</span>
+                                <span class="zone good">Good<br>6-8%</span>
+                                <span class="zone excellent">Excellent<br>8%+</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 4: SDLT Calculator -->
+    <section id="sdlt" class="calculator-section alt-bg">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-number">04</span>
+                <h2>Stamp Duty Calculator</h2>
+                <p>Calculate Stamp Duty Land Tax (SDLT) including the 3% additional property surcharge and 2% non-resident surcharge.</p>
+            </div>
+            
+            <div class="calculator-grid">
+                <div class="calculator-inputs">
+                    <div class="input-group">
+                        <label for="sdlt-price">Property Purchase Price</label>
+                        <div class="input-wrapper currency">
+                            <span class="currency-symbol">£</span>
+                            <input type="number" id="sdlt-price" value="250000" min="0" step="5000">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="sdlt-country">Property Location</label>
+                        <select id="sdlt-country">
+                            <option value="england">England or Northern Ireland</option>
+                            <option value="scotland">Scotland (LBTT)</option>
+                            <option value="wales">Wales (LTT)</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Is this an additional property?</label>
+                        <div class="toggle-group">
+                            <button class="toggle-btn" data-value="no">No - First Home</button>
+                            <button class="toggle-btn active" data-value="yes">Yes - BTL/Additional</button>
+                        </div>
+                        <input type="hidden" id="sdlt-additional" value="yes">
+                        <span class="input-hint">BTL properties attract +5% surcharge (increased Oct 2024)</span>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Are you a non-UK resident?</label>
+                        <div class="toggle-group">
+                            <button class="toggle-btn active" data-value="no">UK Resident</button>
+                            <button class="toggle-btn" data-value="yes">Non-UK Resident</button>
+                        </div>
+                        <input type="hidden" id="sdlt-nonresident" value="no">
+                        <span class="input-hint">Non-residents pay +2% surcharge</span>
+                    </div>
+
+                    <button class="btn btn-primary btn-calculate" onclick="calculateSDLT()">
+                        Calculate Stamp Duty
+                    </button>
+                </div>
+
+                <div class="calculator-results">
+                    <div class="result-card main-result">
+                        <div class="result-label">Total Stamp Duty Payable</div>
+                        <div class="result-value" id="sdlt-total">£0</div>
+                        <div class="result-sublabel">Effective Rate: <span id="sdlt-effective-rate">0%</span></div>
+                    </div>
+
+                    <div class="sdlt-breakdown">
+                        <h4>Breakdown by Band</h4>
+                        <div class="breakdown-table" id="sdlt-breakdown-table">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+
+                    <div class="surcharge-summary" id="surcharge-summary">
+                        <!-- Populated by JS -->
+                    </div>
+
+                    <div class="info-box">
+                        <i data-lucide="calendar" class="info-icon"></i>
+                        <div class="info-content">
+                            <strong>SDLT Payment Deadline</strong>
+                            <p>Stamp Duty must be paid within 14 days of completion. Your solicitor typically handles this as part of the conveyancing process.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Banner 2 -->
+    <section class="cta-banner dark">
+        <div class="container">
+            <div class="cta-image">
+                <img src="https://lendlord.io/wp-content/uploads/2023/07/Lendlord-Portfolio-financing-platform-for-landlords-14.png" alt="Lendlord Platform">
+            </div>
+            <div class="cta-content">
+                <div class="cta-text">
+                    <h3>Compare 80+ UK Lenders in Minutes</h3>
+                    <p>Stop searching endlessly. Our smart matching system finds the best BTL mortgage deals tailored to your exact circumstances.</p>
+                    <ul class="cta-features">
+                        <li><i data-lucide="check" class="cta-check"></i> Limited Company & Individual options</li>
+                        <li><i data-lucide="check" class="cta-check"></i> HMO & Portfolio Landlord specialists</li>
+                        <li><i data-lucide="check" class="cta-check"></i> Expert advice included</li>
+                    </ul>
+                </div>
+                <a href="https://app.lendlord.io/online-mortgage-broker?country=uk&utm_source=btl_mortgage_calculator&utm_campaign=Organic" class="btn btn-primary btn-large" target="_blank" rel="noopener">
+                    Get My Personalised Mortgage Quote
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 5: Full Investment Analysis -->
+    <section id="analysis" class="calculator-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-number">05</span>
+                <h2>Full Investment Analysis</h2>
+                <p>Comprehensive ROI analysis including cash-on-cash return, total capital required, and Section 24 tax impact.</p>
+            </div>
+            
+            <div class="analysis-grid">
+                <div class="calculator-inputs">
+                    <div class="input-section-title">Property Details</div>
+                    
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label for="roi-price">Purchase Price</label>
+                            <div class="input-wrapper currency">
+                                <span class="currency-symbol">£</span>
+                                <input type="number" id="roi-price" value="250000" min="0" step="5000">
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label for="roi-rent">Monthly Rent</label>
+                            <div class="input-wrapper currency">
+                                <span class="currency-symbol">£</span>
+                                <input type="number" id="roi-rent" value="1200" min="0" step="50">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="input-section-title">Mortgage Details</div>
+                    
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label for="roi-ltv">Loan-to-Value (LTV)</label>
+                            <div class="input-wrapper">
+                                <input type="number" id="roi-ltv" value="75" min="0" max="90" step="5">
+                                <span class="input-suffix">%</span>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label for="roi-rate">Interest Rate</label>
+                            <div class="input-wrapper">
+                                <input type="number" id="roi-rate" value="3.57" min="0" max="15" step="0.1">
+                                <span class="input-suffix">%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="input-section-title">Purchase Costs</div>
+                    
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label for="roi-legal">Legal Fees</label>
+                            <div class="input-wrapper currency">
+                                <span class="currency-symbol">£</span>
+                                <input type="number" id="roi-legal" value="1500" min="0" step="100">
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label for="roi-survey">Survey/Valuation</label>
+                            <div class="input-wrapper currency">
+                                <span class="currency-symbol">£</span>
+                                <input type="number" id="roi-survey" value="500" min="0" step="50">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="roi-refurb">Refurbishment Budget</label>
+                        <div class="input-wrapper currency">
+                            <span class="currency-symbol">£</span>
+                            <input type="number" id="roi-refurb" value="0" min="0" step="1000">
+                        </div>
+                    </div>
+
+                    <div class="input-section-title">Tax & Ownership</div>
+                    
+                    <div class="input-group">
+                        <label for="roi-ownership">Ownership Structure</label>
+                        <div class="toggle-group">
+                            <button class="toggle-btn active" data-value="individual">Individual</button>
+                            <button class="toggle-btn" data-value="limited">Limited Company</button>
+                        </div>
+                        <input type="hidden" id="roi-ownership" value="individual">
+                    </div>
+
+                    <div class="input-group" id="roi-tax-band-group">
+                        <label for="roi-tax-band">Your Tax Band</label>
+                        <select id="roi-tax-band">
+                            <option value="basic">Basic Rate (20%)</option>
+                            <option value="higher" selected>Higher Rate (40%)</option>
+                            <option value="additional">Additional Rate (45%)</option>
+                        </select>
+                    </div>
+
+                    <button class="btn btn-primary btn-calculate btn-large" onclick="calculateFullAnalysis()">
+                        Run Full Analysis
+                    </button>
+                </div>
+
+                <div class="calculator-results analysis-results">
+                    <div class="analysis-summary">
+                        <div class="summary-card">
+                            <i data-lucide="banknote" class="summary-icon"></i>
+                            <div class="summary-content">
+                                <div class="summary-value" id="roi-total-capital">£0</div>
+                                <div class="summary-label">Total Capital Required</div>
+                            </div>
+                        </div>
+                        <div class="summary-card">
+                            <i data-lucide="trending-up" class="summary-icon"></i>
+                            <div class="summary-content">
+                                <div class="summary-value" id="roi-cash-on-cash">0%</div>
+                                <div class="summary-label">Cash-on-Cash Return</div>
+                            </div>
+                        </div>
+                        <div class="summary-card">
+                            <i data-lucide="coins" class="summary-icon"></i>
+                            <div class="summary-content">
+                                <div class="summary-value" id="roi-monthly-profit">£0</div>
+                                <div class="summary-label">Monthly Net Cashflow</div>
+                            </div>
+                        </div>
+                        <div class="summary-card">
+                            <i data-lucide="target" class="summary-icon"></i>
+                            <div class="summary-content">
+                                <div class="summary-value" id="roi-gross-yield">0%</div>
+                                <div class="summary-label">Gross Yield</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="analysis-detail-grid">
+                        <div class="detail-section">
+                            <h4>Capital Breakdown</h4>
+                            <div class="detail-list" id="capital-breakdown">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+                        <div class="detail-section">
+                            <h4>Monthly Cashflow</h4>
+                            <div class="detail-list" id="cashflow-breakdown">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tax-impact-section" id="tax-impact-section">
+                        <h4>Section 24 Tax Impact</h4>
+                        <div class="tax-comparison">
+                            <div class="tax-card old">
+                                <div class="tax-card-header">Pre-2020 Rules</div>
+                                <div class="tax-card-value" id="tax-old">£0</div>
+                                <div class="tax-card-label">Annual Tax Bill</div>
+                            </div>
+                            <div class="tax-card new">
+                                <div class="tax-card-header">Current Rules (S.24)</div>
+                                <div class="tax-card-value" id="tax-new">£0</div>
+                                <div class="tax-card-label">Annual Tax Bill</div>
+                            </div>
+                        </div>
+                        <div class="tax-difference" id="tax-difference">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+
+                    <div class="info-box success" id="verdict-box">
+                        <i data-lucide="check-circle" class="info-icon" id="verdict-icon"></i>
+                        <div class="info-content">
+                            <strong>Investment Verdict</strong>
+                            <p id="verdict-text">Enter your details to see the analysis.</p>
+                        </div>
+                    </div>
+
+                    <!-- Regulatory Updates -->
+                    <div class="regulatory-updates">
+                        <h4><i data-lucide="alert-circle" style="display:inline-block;vertical-align:middle;margin-right:8px;width:18px;height:18px;"></i>Key Regulatory Changes for Landlords</h4>
+                        
+                        <div class="update-item">
+                            <div class="update-badge new">NEW</div>
+                            <div class="update-content">
+                                <strong>Renters Rights Act 2025</strong>
+                                <ul>
+                                    <li>Section 21 (no-fault evictions) <strong>abolished</strong></li>
+                                    <li>All tenancies now periodic (rolling) by default</li>
+                                    <li>Rent increases limited to <strong>once per year</strong></li>
+                                    <li>Property Portal registration <strong>mandatory from April 2026</strong></li>
+                                    <li>Decent Homes Standard now applies to private rentals</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="update-item">
+                            <div class="update-badge warning">APR 2026</div>
+                            <div class="update-content">
+                                <strong>Making Tax Digital (MTD)</strong>
+                                <ul>
+                                    <li>Landlords with <strong>£50k+</strong> rental income: quarterly digital reporting from April 2026</li>
+                                    <li>Landlords with <strong>£30k-£50k</strong>: from April 2027</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="update-item">
+                            <div class="update-badge warning">APR 2026</div>
+                            <div class="update-content">
+                                <strong>New Property Income Tax Rates</strong>
+                                <ul>
+                                    <li>Basic rate: <strong>22%</strong> (was 20%)</li>
+                                    <li>Higher rate: <strong>42%</strong> (was 40%)</li>
+                                    <li>Additional rate: <strong>47%</strong> (was 45%)</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="update-item">
+                            <div class="update-badge live">LIVE</div>
+                            <div class="update-content">
+                                <strong>SDLT Changes (from Oct 2024 / Apr 2025)</strong>
+                                <ul>
+                                    <li>Additional property surcharge: <strong>5%</strong> (was 3%)</li>
+                                    <li>SDLT threshold: <strong>£125,000</strong> (was £250,000)</li>
+                                    <li>CGT on property: <strong>18%/24%</strong> (was 10%/20%)</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="final-cta">
+        <div class="container">
+            <div class="final-cta-content">
+                <h2>Ready to Secure Your Buy-to-Let Mortgage?</h2>
+                <p>Join thousands of UK landlords who've found their perfect mortgage through Lendlord</p>
+                <div class="cta-stats">
+                    <div class="stat">
+                        <div class="stat-value">80+</div>
+                        <div class="stat-label">UK Lenders</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">£2B+</div>
+                        <div class="stat-label">Mortgages Arranged</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">4.8★</div>
+                        <div class="stat-label">Trustpilot Rating</div>
+                    </div>
+                </div>
+                <a href="https://app.lendlord.io/online-mortgage-broker?country=uk&utm_source=btl_mortgage_calculator&utm_campaign=Organic" class="btn btn-white btn-large" target="_blank" rel="noopener">
+                    Discover What Mortgage Deal is Right For Me
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Data Sources Section -->
+    <section class="data-sources">
+        <div class="container">
+            <h4>Official Data Sources</h4>
+            <div class="sources-grid">
+                <div class="source-item">
+                    <img src="https://www.bankofengland.co.uk/-/media/boe/images/boe-logo.svg" alt="Bank of England" onerror="this.style.display='none'">
+                    <div class="source-info">
+                        <strong>Bank of England</strong>
+                        <span>Base Rate & Mortgage Rate Averages</span>
+                        <a href="https://www.bankofengland.co.uk/boeapps/database/" target="_blank" rel="noopener">IADB Database</a>
+                    </div>
+                </div>
+                <div class="source-item">
+                    <img src="https://cdn.ons.gov.uk/assets/images/ons-logo.svg" alt="ONS" onerror="this.style.display='none'">
+                    <div class="source-info">
+                        <strong>Office for National Statistics</strong>
+                        <span>Private Rental Market Statistics</span>
+                        <a href="https://www.ons.gov.uk/peoplepopulationandcommunity/housing" target="_blank" rel="noopener">Housing Data</a>
+                    </div>
+                </div>
+                <div class="source-item">
+                    <img src="https://www.gov.uk/assets/static/opengraph-image-a1f7d89ffd0782738b1aeb0da37842d8bd0addbd724b8e58c3edbc7287cc11de.png" alt="HM Land Registry" onerror="this.style.display='none'">
+                    <div class="source-info">
+                        <strong>HM Land Registry</strong>
+                        <span>UK House Price Index</span>
+                        <a href="https://landregistry.data.gov.uk/" target="_blank" rel="noopener">Property Data</a>
+                    </div>
+                </div>
+                <div class="source-item">
+                    <div class="source-info">
+                        <strong>Prudential Regulation Authority</strong>
+                        <span>SS13/16 Stress Test Guidelines</span>
+                        <a href="https://www.bankofengland.co.uk/prudential-regulation/publication/2016/underwriting-standards-for-buy-to-let-mortgage-contracts-ss" target="_blank" rel="noopener">PRA Guidelines</a>
+                    </div>
+                </div>
+            </div>
+            <p class="data-disclaimer">Data is refreshed periodically from official UK government sources. Last update: <span id="last-data-update">January 2026</span></p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <img src="https://lendlord.io/wp-content/uploads/2021/06/Lendlord-logo.svg" alt="Lendlord" height="32" onerror="this.src='https://lendlord.io/wp-content/uploads/2021/06/Lendlord-logo.png'">
+                    <p>Property Investment & Management Made Simple</p>
+                </div>
+                <div class="footer-links">
+                    <a href="https://lendlord.io/" target="_blank" rel="noopener">Home</a>
+                    <a href="https://lendlord.io/tools/calculators/" target="_blank" rel="noopener">Calculators</a>
+                    <a href="https://lendlord.io/finance/mortgages/" target="_blank" rel="noopener">Mortgages</a>
+                    <a href="https://lendlord.io/blog/" target="_blank" rel="noopener">Blog</a>
+                </div>
+                <div class="footer-legal">
+                    <p>© 2026 Lendlord Limited. Company registration: 11973095</p>
+                    <p class="disclaimer">This calculator is for illustrative purposes only. Actual mortgage offers may vary. Always seek professional advice.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="data-api.js"></script>
+    <script src="calculator.js"></script>
+    
+    <!-- Initialize Lucide Icons -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        });
+    </script>
+</body>
+</html>
+
