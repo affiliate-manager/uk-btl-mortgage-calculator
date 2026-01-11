@@ -1036,8 +1036,8 @@
             if (storedTheme) {
                 return storedTheme;
             }
-            // Check system preference
-            return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+            // Default to light mode
+            return 'light';
         }
 
         function setTheme(theme) {
