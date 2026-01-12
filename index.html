@@ -420,7 +420,16 @@
                         </button>
                         <div class="schedule-content" id="schedule-content">
                             <div class="schedule-header">
-                                <h4>Annual Repayment Schedule (Capital & Interest)</h4>
+                                <h4>Repayment Schedule (Capital & Interest)</h4>
+                                <div class="schedule-controls">
+                                    <div class="schedule-toggle">
+                                        <button class="schedule-view-btn active" data-view="yearly" onclick="switchScheduleView('yearly')">Yearly</button>
+                                        <button class="schedule-view-btn" data-view="monthly" onclick="switchScheduleView('monthly')">Monthly</button>
+                                    </div>
+                                    <select id="schedule-year-select" class="schedule-year-select" onchange="showMonthlyForYear(this.value)" style="display:none;">
+                                        <!-- Populated by JS -->
+                                    </select>
+                                </div>
                                 <div class="schedule-summary">
                                     <span>Total Interest: <strong id="schedule-total-interest">£0</strong></span>
                                     <span>Total Paid: <strong id="schedule-total-paid">£0</strong></span>
@@ -430,7 +439,7 @@
                                 <table class="schedule-table">
                                     <thead>
                                         <tr>
-                                            <th>Year</th>
+                                            <th id="schedule-period-header">Year</th>
                                             <th>Payment</th>
                                             <th>Principal</th>
                                             <th>Interest</th>

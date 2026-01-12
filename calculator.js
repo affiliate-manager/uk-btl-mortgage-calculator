@@ -489,29 +489,53 @@ function toggleSchedule(btn) {
 }
 
 /**
- * Generate annual repayment schedule
+ * Store schedule data globally for view switching
+ */
+let scheduleData = {
+    loanAmount: 0,
+    monthlyRate: 0,
+    monthlyPayment: 0,
+    termYears: 0,
+    yearlyData: [],
+    monthlyData: []
+};
+
+/**
+ * Generate repayment schedule data
  */
 function generateRepaymentSchedule(loanAmount, monthlyRate, numberOfPayments, monthlyPayment, termYears) {
-    const tbody = document.getElementById('schedule-tbody');
-    if (!tbody) return;
+    // Store parameters for view switching
+    scheduleData.loanAmount = loanAmount;
+    scheduleData.monthlyRate = monthlyRate;
+    scheduleData.monthlyPayment = monthlyPayment;
+    scheduleData.termYears = termYears;
+    scheduleData.yearlyData = [];
+    scheduleData.monthlyData = [];
     
     let balance = loanAmount;
     let totalInterest = 0;
     let totalPaid = 0;
-    let html = '';
     
-    // Generate yearly summary (not monthly for compact view)
+    // Generate data for all years and months
     for (let year = 1; year <= termYears; year++) {
         let yearlyPrincipal = 0;
         let yearlyInterest = 0;
         let yearlyPayment = 0;
+        let monthsInYear = [];
         
-        // Calculate 12 months
         for (let month = 1; month <= 12; month++) {
             if (balance <= 0) break;
             
             const interestPayment = balance * monthlyRate;
             const principalPayment = Math.min(monthlyPayment - interestPayment, balance);
+            
+            monthsInYear.push({
+                month: month,
+                payment: monthlyPayment,
+                principal: principalPayment,
+                interest: interestPayment,
+                balance: Math.max(0, balance - principalPayment)
+            });
             
             yearlyInterest += interestPayment;
             yearlyPrincipal += principalPayment;
@@ -524,22 +548,119 @@ function generateRepaymentSchedule(loanAmount, monthlyRate, numberOfPayments, mo
         totalInterest += yearlyInterest;
         totalPaid += yearlyPayment;
         
-        html += `
-            <tr>
-                <td>Year ${year}</td>
-                <td>${formatCurrency(yearlyPayment)}</td>
-                <td class="principal">${formatCurrency(yearlyPrincipal)}</td>
-                <td class="interest">${formatCurrency(yearlyInterest)}</td>
-                <td class="balance">${formatCurrency(balance)}</td>
-            </tr>
-        `;
+        scheduleData.yearlyData.push({
+            year: year,
+            payment: yearlyPayment,
+            principal: yearlyPrincipal,
+            interest: yearlyInterest,
+            balance: balance
+        });
+        
+        scheduleData.monthlyData.push(monthsInYear);
     }
-    
-    tbody.innerHTML = html;
     
     // Update summary
     updateElement('schedule-total-interest', formatCurrency(totalInterest));
     updateElement('schedule-total-paid', formatCurrency(totalPaid));
+    
+    // Populate year selector
+    populateYearSelector(termYears);
+    
+    // Show yearly view by default
+    renderYearlySchedule();
+}
+
+/**
+ * Populate year dropdown for monthly view
+ */
+function populateYearSelector(termYears) {
+    const select = document.getElementById('schedule-year-select');
+    if (!select) return;
+    
+    let html = '';
+    for (let year = 1; year <= termYears; year++) {
+        html += `<option value="${year}">Year ${year}</option>`;
+    }
+    select.innerHTML = html;
+}
+
+/**
+ * Switch between yearly and monthly view
+ */
+function switchScheduleView(view) {
+    const buttons = document.querySelectorAll('.schedule-view-btn');
+    const yearSelect = document.getElementById('schedule-year-select');
+    const periodHeader = document.getElementById('schedule-period-header');
+    
+    buttons.forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.view === view);
+    });
+    
+    if (view === 'monthly') {
+        yearSelect.style.display = 'block';
+        if (periodHeader) periodHeader.textContent = 'Month';
+        showMonthlyForYear(yearSelect.value || 1);
+    } else {
+        yearSelect.style.display = 'none';
+        if (periodHeader) periodHeader.textContent = 'Year';
+        renderYearlySchedule();
+    }
+    
+    // Re-create icons
+    if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+    }
+}
+
+/**
+ * Render yearly schedule view
+ */
+function renderYearlySchedule() {
+    const tbody = document.getElementById('schedule-tbody');
+    if (!tbody || !scheduleData.yearlyData.length) return;
+    
+    let html = '';
+    scheduleData.yearlyData.forEach(data => {
+        html += `
+            <tr>
+                <td>Year ${data.year}</td>
+                <td>${formatCurrency(data.payment)}</td>
+                <td class="principal">${formatCurrency(data.principal)}</td>
+                <td class="interest">${formatCurrency(data.interest)}</td>
+                <td class="balance">${formatCurrency(data.balance)}</td>
+            </tr>
+        `;
+    });
+    
+    tbody.innerHTML = html;
+}
+
+/**
+ * Show monthly breakdown for a specific year
+ */
+function showMonthlyForYear(year) {
+    const tbody = document.getElementById('schedule-tbody');
+    const yearIndex = parseInt(year) - 1;
+    
+    if (!tbody || !scheduleData.monthlyData[yearIndex]) return;
+    
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const months = scheduleData.monthlyData[yearIndex];
+    
+    let html = '';
+    months.forEach(data => {
+        html += `
+            <tr>
+                <td>${monthNames[data.month - 1]}</td>
+                <td>${formatCurrency(data.payment)}</td>
+                <td class="principal">${formatCurrency(data.principal)}</td>
+                <td class="interest">${formatCurrency(data.interest)}</td>
+                <td class="balance">${formatCurrency(data.balance)}</td>
+            </tr>
+        `;
+    });
+    
+    tbody.innerHTML = html;
 }
 
 // ============================================
