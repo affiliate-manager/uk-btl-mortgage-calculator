@@ -566,8 +566,12 @@ function generateRepaymentSchedule(loanAmount, monthlyRate, numberOfPayments, mo
     // Populate year selector
     populateYearSelector(termYears);
     
-    // Show monthly view by default (Year 1)
-    showMonthlyForYear(1);
+    // Show yearly view by default
+    renderYearlySchedule();
+    
+    // Hide year selector by default (only shown for monthly view)
+    const yearSelect = document.getElementById('schedule-year-select');
+    if (yearSelect) yearSelect.style.display = 'none';
 }
 
 /**
