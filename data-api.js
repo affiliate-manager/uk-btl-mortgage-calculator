@@ -27,11 +27,11 @@ let BOE_DATA = {
     nextMPCMeeting: '2026-02-06',
     
     // Quoted Household Interest Rates - BTL Mortgages
-    // Source: Which? / Major UK Lenders (December 2025)
+    // Source: Mojo / Moneyfacts / Major UK Lenders (June 2026)
     // Note: Rates with typical 2-3% arrangement fee
     mortgageRates: {
         twoYearFixed75LTV: 3.89,    // 2yr fixed, 75% LTV
-        fiveYearFixed75LTV: 3.57,   // 5yr fixed, 75% LTV (most popular)
+        fiveYearFixed75LTV: 5.53,   // 5yr fixed, 75% LTV (most popular)
         twoYearFixed60LTV: 3.69,    // 2yr fixed, 60% LTV
         fiveYearFixed60LTV: 3.44,   // 5yr fixed, 60% LTV
         fiveYearFixed80LTV: 4.68,   // 5yr fixed, 80% LTV
