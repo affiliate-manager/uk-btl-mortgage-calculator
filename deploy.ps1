@@ -14,16 +14,24 @@ Write-Host "Uploading files to server..." -ForegroundColor Yellow
 Write-Host ""
 
 # Upload index.html
-Write-Host "[1/3] Uploading index.html..." -ForegroundColor Green
+Write-Host "[1/5] Uploading index.html..." -ForegroundColor Green
 scp "$localPath\index.html" "${server}:${remotePath}"
 
 # Upload calculator.js
-Write-Host "[2/3] Uploading calculator.js..." -ForegroundColor Green
+Write-Host "[2/5] Uploading calculator.js..." -ForegroundColor Green
 scp "$localPath\calculator.js" "${server}:${remotePath}"
 
 # Upload styles.css
-Write-Host "[3/3] Uploading styles.css..." -ForegroundColor Green
+Write-Host "[3/5] Uploading styles.css..." -ForegroundColor Green
 scp "$localPath\styles.css" "${server}:${remotePath}"
+
+# Upload data-api.js (drives live rate values shown in the calculator)
+Write-Host "[4/5] Uploading data-api.js..." -ForegroundColor Green
+scp "$localPath\data-api.js" "${server}:${remotePath}"
+
+# Upload dip-lead.php (Decision in Principle lead capture endpoint)
+Write-Host "[5/5] Uploading dip-lead.php..." -ForegroundColor Green
+scp "$localPath\dip-lead.php" "${server}:${remotePath}"
 
 Write-Host ""
 Write-Host "========================================" -ForegroundColor Cyan

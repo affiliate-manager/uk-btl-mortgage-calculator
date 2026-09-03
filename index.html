@@ -15,7 +15,7 @@
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
     
     <!-- Styles -->
-    <link rel="stylesheet" href="styles.css?v=3">
+    <link rel="stylesheet" href="styles.css?v=6">
     
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="https://lendlord.io/wp-content/uploads/2021/06/cropped-Lendlord-favicon-32x32.png">
@@ -70,16 +70,117 @@
                 </div>
                 <a href="#affordability" class="btn btn-primary btn-large">Start Calculating</a>
             </div>
-            <div class="hero-visual">
+
+            <div class="hero-rates">
                 <div class="rate-card">
                     <div class="rate-label">Current BoE Base Rate</div>
                     <div class="rate-value" id="base-rate">3.75%</div>
-                    <div class="rate-date" id="base-rate-date">Updated: Dec 2025</div>
+                    <div class="rate-date" id="base-rate-date">Updated: Sep 2026</div>
                 </div>
                 <div class="rate-card secondary">
                     <div class="rate-label">Avg 5yr BTL Rate (75% LTV)</div>
-                    <div class="rate-value" id="avg-btl-rate">5.53%</div>
-                    <div class="rate-date">Source: Mojo / UK Lenders (Jun 2026)</div>
+                    <div class="rate-value" id="avg-btl-rate">5.66%</div>
+                    <div class="rate-date">Source: Moneyfacts (Aug 2026)</div>
+                </div>
+            </div>
+
+            <div class="hero-visual">
+                <!-- Indicative Decision in Principle - Simmy -->
+                <div class="dip-card" id="dip-card">
+                    <div class="dip-header">
+                        <img class="dip-avatar" src="https://lendlord-portal-eu.s3.eu-west-2.amazonaws.com/assets/simmy-kaur-director-of-buy-to-let-mortgages.png.webp" alt="Simmy Kaur" width="44" height="44">
+                        <div class="dip-persona">
+                            <div class="dip-persona-name">Simmy Kaur</div>
+                            <div class="dip-persona-title">Director of Buy-to-Let Mortgages</div>
+                            <div class="dip-persona-creds">CeMAP &middot; Financial Reporter 30 Under 30</div>
+                        </div>
+                    </div>
+
+                    <div class="dip-body">
+                        <!-- Step 1: The property -->
+                        <div class="dip-step active" data-dip-step="1">
+                            <p class="dip-copy">Hi, I'm Simmy. I place 300+ BTL mortgages a year. Answer 3 quick questions and I'll give you an indicative decision in principle, then handle the rest personally.</p>
+                            <div class="dip-fields">
+                                <div class="dip-field">
+                                    <label for="dip-value">Property value</label>
+                                    <div class="input-wrapper currency">
+                                        <span class="currency-symbol">&pound;</span>
+                                        <input type="number" id="dip-value" value="250000" min="50000" step="5000">
+                                    </div>
+                                </div>
+                                <div class="dip-field">
+                                    <label for="dip-deposit">Your deposit</label>
+                                    <div class="input-wrapper currency">
+                                        <span class="currency-symbol">&pound;</span>
+                                        <input type="number" id="dip-deposit" value="62500" min="0" step="2500">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="dip-actions">
+                                <button type="button" class="btn btn-primary dip-btn" data-dip-goto="2">Next: the rent</button>
+                            </div>
+                        </div>
+
+                        <!-- Step 2: Rent & ownership -->
+                        <div class="dip-step" data-dip-step="2">
+                            <p class="dip-copy">Next: the rent and how you'll own it. This is what your decision hangs on.</p>
+                            <div class="dip-fields">
+                                <div class="dip-field">
+                                    <label for="dip-rent">Expected monthly rent</label>
+                                    <div class="input-wrapper currency">
+                                        <span class="currency-symbol">&pound;</span>
+                                        <input type="number" id="dip-rent" value="1250" min="0" step="50">
+                                    </div>
+                                </div>
+                                <div class="dip-field">
+                                    <label for="dip-ownership">How will you own it?</label>
+                                    <select id="dip-ownership">
+                                        <option value="personal-basic">Personal name (basic-rate taxpayer)</option>
+                                        <option value="personal-higher">Personal name (higher/additional rate)</option>
+                                        <option value="ltd">Limited company (SPV)</option>
+                                    </select>
+                                </div>
+                                <div class="dip-field">
+                                    <label for="dip-term">Preferred fixed term</label>
+                                    <select id="dip-term">
+                                        <option value="5yr">5-year fixed (borrow more)</option>
+                                        <option value="2yr">2-year fixed</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="dip-actions">
+                                <button type="button" class="btn dip-btn dip-btn-back" data-dip-goto="1">Back</button>
+                                <button type="button" class="btn btn-primary dip-btn" data-dip-goto="3">Next: your decision</button>
+                            </div>
+                        </div>
+
+                        <!-- Step 3: Email gate -->
+                        <div class="dip-step" data-dip-step="3">
+                            <p class="dip-copy">Your decision is ready. Drop your email and I'll send it over, then follow up personally within one working day.</p>
+                            <div class="dip-fields">
+                                <div class="dip-field">
+                                    <label for="dip-email">Where should I send it?</label>
+                                    <div class="input-wrapper">
+                                        <input type="email" id="dip-email" placeholder="you@example.com" autocomplete="email">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="dip-actions">
+                                <button type="button" class="btn dip-btn dip-btn-back" data-dip-goto="2">Back</button>
+                                <button type="button" class="btn btn-primary dip-btn" id="dip-submit">Get my decision</button>
+                            </div>
+                            <p class="dip-smallprint">Indicative only, not a credit decision or formal DIP. No credit check, no impact on your score.</p>
+                        </div>
+
+                        <!-- Result (filled by JS) -->
+                        <div class="dip-step" data-dip-step="result" id="dip-result"></div>
+                    </div>
+
+                    <div class="dip-progress" id="dip-progress" aria-hidden="true">
+                        <span class="dip-dot active"></span>
+                        <span class="dip-dot"></span>
+                        <span class="dip-dot"></span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1034,8 +1135,8 @@
     </footer>
 
     <!-- Scripts -->
-    <script src="data-api.js"></script>
-    <script src="calculator.js?v=3"></script>
+    <script src="data-api.js?v=4"></script>
+    <script src="calculator.js?v=4"></script>
     
     <!-- Theme Toggle & Initialize Lucide Icons -->
     <script>

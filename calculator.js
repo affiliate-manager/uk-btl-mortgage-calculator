@@ -1224,6 +1224,186 @@ function debounce(func, wait) {
 }
 
 // ============================================
+// DECISION IN PRINCIPLE (SIMMY) - 3-STEP FLOW
+// ============================================
+
+const DIP_BROKER_URL = 'https://app.lendlord.io/online-mortgage-broker?country=uk&utm_source=btl_mortgage_calculator&utm_campaign=dip_simmy';
+const DIP_LEAD_ENDPOINT = 'dip-lead.php';
+
+document.addEventListener('DOMContentLoaded', initDIPFlow);
+
+function initDIPFlow() {
+    const card = document.getElementById('dip-card');
+    if (!card) return;
+
+    card.querySelectorAll('[data-dip-goto]').forEach(btn => {
+        btn.addEventListener('click', () => dipGoToStep(btn.dataset.dipGoto));
+    });
+
+    const submitBtn = document.getElementById('dip-submit');
+    submitBtn.addEventListener('click', submitDIP);
+
+    document.getElementById('dip-email').addEventListener('keydown', e => {
+        if (e.key === 'Enter') submitDIP();
+    });
+}
+
+function dipGoToStep(step) {
+    const card = document.getElementById('dip-card');
+
+    // Light validation before moving forward
+    if (step === '2') {
+        const value = parseFloat(document.getElementById('dip-value').value) || 0;
+        const deposit = parseFloat(document.getElementById('dip-deposit').value) || 0;
+        if (value <= 0 || deposit <= 0 || deposit >= value) return;
+    }
+    if (step === '3') {
+        const rent = parseFloat(document.getElementById('dip-rent').value) || 0;
+        if (rent <= 0) return;
+    }
+
+    card.querySelectorAll('.dip-step').forEach(el => {
+        el.classList.toggle('active', el.dataset.dipStep === step);
+    });
+
+    const dots = card.querySelectorAll('.dip-dot');
+    const stepIndex = step === 'result' ? 2 : parseInt(step) - 1;
+    dots.forEach((dot, i) => dot.classList.toggle('active', i === stepIndex));
+}
+
+/**
+ * Compute the indicative decision using the same PRA ICR model
+ * as the affordability calculator.
+ */
+function computeDIPDecision() {
+    const value = parseFloat(document.getElementById('dip-value').value) || 0;
+    const deposit = parseFloat(document.getElementById('dip-deposit').value) || 0;
+    const rent = parseFloat(document.getElementById('dip-rent').value) || 0;
+    const ownership = document.getElementById('dip-ownership').value;
+    const term = document.getElementById('dip-term').value;
+
+    // Pay rate from live market data when available
+    let payRate5 = 5.66, payRate2 = 5.27;
+    if (typeof DataAPI !== 'undefined') {
+        payRate5 = DataAPI.getMortgageRate('5year', 75).rate;
+        payRate2 = DataAPI.getMortgageRate('2year', 75).rate;
+    }
+
+    const payRate = term === '5yr' ? payRate5 : payRate2;
+    // 5yr fixes: stressed at pay rate (min 4.5%). Shorter: max(5.5%, pay + 2%)
+    const stressRate = term === '5yr' ? Math.max(payRate, 4.5) : Math.max(5.5, payRate + 2);
+    const icr = ownership === 'personal-higher' ? 1.45 : 1.25;
+
+    const icrMaxLoan = (rent * 12) / ((stressRate / 100) * icr);
+    const ltvMaxLoan = value * 0.75;
+    const maxLoan = Math.min(icrMaxLoan, ltvMaxLoan);
+    const requestedLoan = Math.max(value - deposit, 0);
+
+    return {
+        value, deposit, rent, ownership, term,
+        stressRate, icr, maxLoan, requestedLoan,
+        passes: requestedLoan > 0 && requestedLoan <= maxLoan,
+        // Rent that would support the requested loan (for the "needs adjusting" path)
+        rentNeeded: (requestedLoan * (stressRate / 100) * icr) / 12
+    };
+}
+
+function submitDIP() {
+    const emailInput = document.getElementById('dip-email');
+    const email = emailInput.value.trim();
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
+        emailInput.style.borderColor = 'var(--red)';
+        emailInput.focus();
+        return;
+    }
+    emailInput.style.borderColor = '';
+
+    const decision = computeDIPDecision();
+    sendDIPLead(email, decision);
+    renderDIPResult(email, decision);
+    dipGoToStep('result');
+}
+
+/**
+ * Send the lead to the backend so Simmy's team can follow up.
+ * Never blocks the UI - the user gets their result either way.
+ */
+function sendDIPLead(email, decision) {
+    const lead = {
+        email: email,
+        propertyValue: decision.value,
+        deposit: decision.deposit,
+        monthlyRent: decision.rent,
+        ownership: decision.ownership,
+        term: decision.term,
+        maxLoan: Math.round(decision.maxLoan),
+        requestedLoan: Math.round(decision.requestedLoan),
+        decision: decision.passes ? 'pass' : 'review',
+        page: window.location.href,
+        submittedAt: new Date().toISOString()
+    };
+
+    // Keep a local copy in case the endpoint is unreachable
+    try {
+        const stored = JSON.parse(localStorage.getItem('dip_leads') || '[]');
+        stored.push(lead);
+        localStorage.setItem('dip_leads', JSON.stringify(stored));
+    } catch (e) { /* storage unavailable - ignore */ }
+
+    fetch(DIP_LEAD_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(lead)
+    }).catch(() => console.warn('DIP lead endpoint unreachable - lead kept in localStorage'));
+}
+
+function renderDIPResult(email, d) {
+    const container = document.getElementById('dip-result');
+    const ownershipLabel = d.ownership === 'ltd' ? 'a limited company'
+        : d.ownership === 'personal-basic' ? 'a basic-rate taxpayer'
+        : 'a higher-rate taxpayer';
+
+    const badge = d.passes
+        ? '<span class="dip-decision-badge pass">In principle: yes</span>'
+        : '<span class="dip-decision-badge review">Nearly there, let\'s adjust it</span>';
+
+    const explain = 'Based on ' + formatCurrency(d.rent) + '/month rent, stress-tested at '
+        + d.stressRate.toFixed(2) + '% with ' + Math.round(d.icr * 100) + '% interest cover as '
+        + ownershipLabel + ', capped at 75% LTV.';
+
+    const personalNote = d.passes
+        ? '<strong>You\'re in good shape.</strong> Your rent comfortably supports the '
+            + formatCurrency(d.requestedLoan) + ' you need. I\'ve sent a copy to <strong>' + escapeDIPHtml(email)
+            + '</strong> and I\'ll personally review your details and follow up within one working day with the lenders I\'d put you in front of.'
+        : '<strong>Don\'t worry, this is fixable.</strong> Rent of about <strong>' + formatCurrency(d.rentNeeded)
+            + '/month</strong> would support the loan you need, or a deposit of <strong>' + formatCurrency(Math.max(d.value - d.maxLoan, 0))
+            + '</strong> would do it. I\'ve sent the numbers to <strong>' + escapeDIPHtml(email)
+            + '</strong> and I\'ll personally look at ways to make this work. Top slicing and specialist lenders often unlock deals like yours.';
+
+    container.innerHTML = badge
+        + '<div class="dip-result-amount">' + formatCurrency(d.maxLoan) + '</div>'
+        + '<div class="dip-result-amount-label">Your indicative borrowing, in principle</div>'
+        + '<div class="dip-result-note">' + personalNote + '</div>'
+        + '<p class="dip-signoff">Simmy Kaur, Director of Buy-to-Let Mortgages</p>'
+        + '<div class="dip-actions">'
+        + '<a href="' + DIP_BROKER_URL + '" target="_blank" rel="noopener" class="btn btn-primary dip-btn">Book a call with me</a>'
+        + '<button type="button" class="btn dip-btn dip-btn-back" data-dip-goto="1">Start over</button>'
+        + '</div>'
+        + '<p class="dip-smallprint">' + explain + ' Indicative only, not a credit decision or formal DIP. No credit check was performed.</p>';
+
+    container.querySelector('[data-dip-goto]').addEventListener('click', function() {
+        dipGoToStep(this.dataset.dipGoto);
+    });
+}
+
+function escapeDIPHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+}
+
+// ============================================
 // SMOOTH SCROLL FOR ANCHOR LINKS
 // ============================================
 

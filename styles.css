@@ -339,8 +339,8 @@ a:hover {
 
 .hero .container {
     display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 40px;
+    grid-template-columns: 1fr auto auto;
+    gap: 28px;
     align-items: center;
 }
 
@@ -383,9 +383,217 @@ a:hover {
     color: var(--green);
 }
 
+.hero-rates {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-width: 160px;
+}
+
+.hero-rates .rate-card {
+    padding: 16px 20px;
+    min-width: 160px;
+}
+
+.hero-rates .rate-value {
+    font-size: 1.75rem;
+}
+
 .hero-visual {
     display: flex;
+    flex-direction: column;
     gap: 16px;
+    max-width: 420px;
+    width: 100%;
+}
+
+/* Decision in Principle (Simmy) Card */
+.dip-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    width: 100%;
+    box-shadow: var(--shadow);
+}
+
+.dip-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-bottom: 14px;
+    margin-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+}
+
+.dip-avatar {
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--primary);
+}
+
+.dip-persona-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.dip-persona-title {
+    font-size: 11px;
+    color: var(--text-secondary);
+    margin-top: 1px;
+}
+
+.dip-persona-creds {
+    font-size: 10px;
+    color: var(--primary);
+    font-weight: 600;
+    margin-top: 2px;
+}
+
+.dip-step {
+    display: none;
+}
+
+.dip-step.active {
+    display: block;
+}
+
+.dip-copy {
+    font-size: 12.5px;
+    line-height: 1.55;
+    color: var(--text-secondary);
+    margin-bottom: 14px;
+}
+
+.dip-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.dip-field label {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 5px;
+}
+
+.dip-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.dip-actions .btn-primary {
+    flex: 1;
+}
+
+.dip-btn-back {
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+}
+
+.dip-btn-back:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+.dip-smallprint {
+    font-size: 10px;
+    color: var(--text-muted);
+    margin-top: 10px;
+    line-height: 1.5;
+}
+
+.dip-progress {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 14px;
+}
+
+.dip-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--border);
+    transition: var(--transition);
+}
+
+.dip-dot.active {
+    background: var(--primary);
+    width: 18px;
+    border-radius: 3px;
+}
+
+/* DIP result */
+.dip-decision-badge {
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 12px;
+}
+
+.dip-decision-badge.pass {
+    background: rgba(38, 166, 65, 0.15);
+    color: var(--green-light);
+    border: 1px solid var(--green);
+}
+
+.dip-decision-badge.review {
+    background: rgba(227, 179, 65, 0.12);
+    color: var(--yellow);
+    border: 1px solid var(--yellow);
+}
+
+.dip-result-amount {
+    font-size: 1.9rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    line-height: 1.1;
+}
+
+.dip-result-amount-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+    margin-top: 4px;
+}
+
+.dip-result-note {
+    font-size: 12px;
+    line-height: 1.55;
+    color: var(--text-secondary);
+    padding: 10px 12px;
+    background: var(--bg-tertiary);
+    border-left: 3px solid var(--primary);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    margin-bottom: 14px;
+}
+
+.dip-result-note strong {
+    color: var(--text-primary);
+}
+
+.dip-signoff {
+    font-size: 12px;
+    font-style: italic;
+    color: var(--text-secondary);
+    margin-bottom: 14px;
 }
 
 .rate-card {
@@ -433,7 +641,20 @@ a:hover {
     }
     .hero-subtitle { margin-left: auto; margin-right: auto; }
     .hero-badges { justify-content: center; }
-    .hero-visual { justify-content: center; flex-wrap: wrap; }
+    .hero-rates {
+        flex-direction: row;
+        justify-content: center;
+        max-width: 480px;
+        margin: 0 auto;
+        width: 100%;
+    }
+    .hero-rates .rate-card { flex: 1; }
+    .hero-visual {
+        max-width: 480px;
+        margin: 0 auto;
+        width: 100%;
+        justify-content: center;
+    }
 }
 
 /* Calculator Navigation - Tab Style */
